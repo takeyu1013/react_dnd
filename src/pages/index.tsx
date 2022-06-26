@@ -34,9 +34,9 @@ const Card: FC<{
       if (!ref.current) {
         return;
       }
-      const dragIndex = item.index;
-      const hoverIndex = index;
-      if (dragIndex === hoverIndex) {
+
+      const { index: dragIndex } = item;
+      if (dragIndex === index) {
         return;
       }
 
@@ -44,18 +44,19 @@ const Card: FC<{
       if (!clientOffset) {
         return;
       }
-      const { top, bottom } = ref.current?.getBoundingClientRect();
+
+      const { top, bottom } = ref.current.getBoundingClientRect();
       const hoverMiddleY = (bottom - top) / 2;
       const hoverClientY = clientOffset.y - top;
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+      if (dragIndex < index && hoverClientY < hoverMiddleY) {
         return;
       }
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+      if (dragIndex > index && hoverClientY > hoverMiddleY) {
         return;
       }
 
-      moveCard(dragIndex, hoverIndex);
-      item.index = hoverIndex;
+      moveCard(dragIndex, index);
+      item.index = index;
     },
   });
   const [{ isDragging }, drag] = useDrag({

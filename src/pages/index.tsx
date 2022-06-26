@@ -1,8 +1,8 @@
 import type { NextPage } from "next";
-import { FC, useEffect } from "react";
+import type { FC } from "react";
 import type { Identifier } from "dnd-core";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 

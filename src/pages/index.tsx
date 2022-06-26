@@ -6,16 +6,13 @@ import { useState, useRef, useEffect } from "react";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-const ItemTypes = {
-  CARD: "card",
-} as const;
-
-const Card: FC<{
+const ITEM = "item" as const;
+const Item: FC<{
   id: number;
   text: string;
   index: number;
-  moveCard: (dragIndex: number, hoverIndex: number) => void;
-}> = ({ id, text, index, moveCard }) => {
+  move: (dragIndex: number, index: number) => void;
+}> = ({ id, text, index, move }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ handlerId }, drop] = useDrop<
     {
@@ -24,7 +21,7 @@ const Card: FC<{
     void,
     { handlerId: Identifier | null }
   >({
-    accept: ItemTypes.CARD,
+    accept: ITEM,
     collect(monitor) {
       return {
         handlerId: monitor.getHandlerId(),
@@ -55,12 +52,12 @@ const Card: FC<{
         return;
       }
 
-      moveCard(dragIndex, index);
+      move(dragIndex, index);
       item.index = index;
     },
   });
   const [{ isDragging }, drag] = useDrag({
-    type: ItemTypes.CARD,
+    type: ITEM,
     item: () => {
       return { id, index };
     },
@@ -82,7 +79,7 @@ const Card: FC<{
 };
 
 const Home: NextPage = () => {
-  const [cards, setCards] = useState<
+  const [items, setItems] = useState<
     {
       id: number;
       text: string;
@@ -110,7 +107,7 @@ const Home: NextPage = () => {
     },
   ]);
 
-  const moveCard = (dragIndex: number, hoverIndex: number) => {
+  const move = (dragIndex: number, index: number) => {
     type Item = {
       id: number;
       text: string;
@@ -122,28 +119,15 @@ const Home: NextPage = () => {
       ...items: Item[]
     ) =>
       input.slice(0, start).concat(...items, input.slice(start + deleteCount));
-    setCards((prevCards) =>
-      splice(
-        splice(prevCards, dragIndex, 1),
-        hoverIndex,
-        0,
-        prevCards[dragIndex]
-      )
+    setItems((items) =>
+      splice(splice(items, dragIndex, 1), index, 0, items[dragIndex])
     );
   };
 
   return (
     <DndProvider backend={HTML5Backend}>
-      {cards.map(({ id, text }, index) => {
-        return (
-          <Card
-            key={id}
-            id={id}
-            text={text}
-            index={index}
-            moveCard={moveCard}
-          />
-        );
+      {items.map(({ id, text }, index) => {
+        return <Item key={id} id={id} text={text} index={index} move={move} />;
       })}
     </DndProvider>
   );

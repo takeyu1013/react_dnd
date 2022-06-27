@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
+import type { FC } from "react";
 
-import { useState, useRef, useEffect, FC } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -11,18 +12,18 @@ type Item = {
   text: string;
 };
 
-const Item: FC<
-  Item & {
-    index: number;
-    move: (dragIndex: number, index: number) => void;
-  }
-> = ({ id, text, index, move }) => {
+type ItemProps = Item & {
+  index: number;
+  move: (dragIndex: number, index: number) => void;
+};
+
+const Item: FC<ItemProps> = ({ id, text, index, move }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [, drag] = useDrag<Pick<Item, "id"> & { index: number }>({
+  const [, drag] = useDrag<Pick<Item, "id"> & Pick<ItemProps, "index">>({
     type: ITEM,
     item: { id, index },
   });
-  const [, drop] = useDrop<{ index: number }>({
+  const [, drop] = useDrop<Pick<ItemProps, "index">>({
     accept: ITEM,
     hover(item, monitor) {
       if (!ref.current) {

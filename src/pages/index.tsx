@@ -12,16 +12,16 @@ type Item = {
   text: string;
 };
 
-type ItemProps = Item & {
+type ItemProps = Pick<Item, "text"> & {
   index: number;
   move: (dragIndex: number, index: number) => void;
 };
 
-const Item: FC<ItemProps> = ({ id, text, index, move }) => {
+const Item: FC<ItemProps> = ({ text, index, move }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [, drag] = useDrag<Pick<Item, "id"> & Pick<ItemProps, "index">>({
+  const [, drag] = useDrag<Pick<ItemProps, "index">>({
     type: ITEM,
-    item: { id, index },
+    item: { index },
   });
   const [, drop] = useDrop<Pick<ItemProps, "index">>({
     accept: ITEM,
@@ -88,7 +88,6 @@ const Home: NextPage = () => {
         return (
           <Item
             key={id}
-            id={id}
             text={text}
             index={index}
             move={(dragIndex, index) => {

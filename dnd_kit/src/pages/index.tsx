@@ -25,14 +25,18 @@ const Draggable: FC<{ children: ReactNode }> = ({ children }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: "draggable",
   });
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
-    : undefined;
 
   return (
-    <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
+    <button
+      ref={setNodeRef}
+      style={
+        transform
+          ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
+          : undefined
+      }
+      {...listeners}
+      {...attributes}
+    >
       {children}
     </button>
   );
@@ -42,6 +46,7 @@ const Droppable: FC<{ children: ReactNode }> = ({ children }) => {
   const { isOver, setNodeRef } = useDroppable({
     id: "droppable",
   });
+
   return (
     <div ref={setNodeRef} style={{ color: isOver ? "green" : undefined }}>
       {children}
@@ -52,6 +57,7 @@ const Droppable: FC<{ children: ReactNode }> = ({ children }) => {
 const Sortable: FC<{ id: number }> = ({ id }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
+
   return (
     <div
       ref={setNodeRef}
@@ -74,7 +80,7 @@ const Home: NextPage = () => {
   );
 
   return (
-    <div>
+    <main>
       <DndContext
         onDragEnd={(event) => {
           if (event.over && event.over.id === "droppable") {
@@ -113,7 +119,7 @@ const Home: NextPage = () => {
           ))}
         </SortableContext>
       </DndContext>
-    </div>
+    </main>
   );
 };
 
